@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: SpringBootBackBone
+  jpa:
+    hibernate:
+      ddlAuto: create
+    show-sql: false
+
+server:
+  port: 8080

@@ -1,0 +1,206 @@
+<html>
+
+<head>
+
+<!-- Bootstrap theme, make things look good -->
+<link rel="stylesheet" href="lib/bootstrap-3.3.2/css/bootstrap.min.css" />
+
+
+<!-- Minimum Required Libraries for Backbone -->
+<script src="lib/underscore-1.4.4.js"></script>
+<script src="lib/jquery-1.11.3.min.js"></script>
+<script src="lib/backbone-0.9.10.js"></script>
+<script src="lib/c3.min.js"></script>
+<script src="lib/d3.min.js"></script>
+<script src="lib/bootstrap-3.3.2/js/bootstrap.min.js"></script>
+
+<script src="app/customer.model.js"></script>
+<script src="app/customer.item.view.js"></script>
+<script src="app/customer.list.view.js"></script>
+<script src="app/customer.edit.view.js"></script>
+<script src="app/customer.add.view.js"></script>
+<script src="app/action.view.js"></script>
+
+
+
+<title>Spring Boot BackBone</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body>
+
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Spring Boot BackBone</a>
+
+
+				<ul class="navbar-nav nav">
+					<li class="active"><a class="nav-item" href="#">Home</a></li>
+				</ul>
+				<div>
+					<div>
+	</nav>
+
+
+	<div class="container">
+
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h2>Spring Boot BackBone SPA</h2>
+			</div>
+
+			<div class="panel-body">
+
+				<div class="row">
+
+					<div class="col-md-12">
+						<p class="text-center text-primary">
+						<h2 class="text-center text-danger"></h2>
+						</p>
+					</div>
+				</div>
+
+				<br />
+
+				<div class="row">
+					<!-- LIST -->
+					<div id="actions" class="col-md-12">
+
+
+						<form id="actions" class="form-inline">
+					</div>
+
+					</form>
+
+				</div>
+
+				<br />
+
+				<div class="row">
+					<!-- LIST -->
+					<div class="col-md-12">
+
+						<div>
+
+							<div class="panel panel-primary">
+
+								<div class="panel-heading">
+									<h3 id="panel-title" class="panel-title">Customers</h3>
+								</div>
+
+								<div id="customers" class="panel-body">
+									<table class="table">
+
+										<tr class="table-info">
+											<th>Id</th>
+											<th>Name</th>
+											<th>Action</th>
+										</tr>
+
+
+									</table>
+								</div>
+
+							</div>
+						</div>
+
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<script>
+	var AppRouter = Backbone.Router.extend({
+		routes : {
+			"edit/:id" : "edit",
+			"add" : "add",
+			"customers" : "customers",
+			"*actions" : "defaultRoute"
+
+		// matches http://example.com/#anything-here
+		}
+	});
+	// Initiate the router
+	app_router = new AppRouter;
+
+	app_router.on('route:edit', function(id) {
+
+		var editView = new CustomerEditView({
+			id : id
+		});
+
+	});
+
+	app_router.on('route:add', function() {
+
+		var addView = new CustomerAddView({
+	
+		});
+
+	});
+	
+	
+	app_router.on('route:customers', function() {
+
+		var editView = new CustomerEditView();
+		editView.render();
+
+	});
+
+	app_router.on('route:defaultRoute', function(actions) {
+		customers = new Customer.Collection();
+		customers.fetch({
+			url : 'customer/all',
+			success : function(col, response, options) {
+
+				var view = new CustomerListView({
+					collection : customers,
+					fetch : false
+				});
+
+			}
+		});
+	});
+
+	// Start Backbone history a necessary step for bookmarkable URL's
+	Backbone.history.start();
+
+	$.ajax({
+		url : "/customer/all",
+	}).done(function(data) {
+		actions = new ActionView({
+			services : data
+		});
+		actions.render();
+
+	});
+
+	customers = new Customer.Collection();
+	customers.fetch({
+		url : 'customer/all',
+		success : function(col, response, options) {
+
+			var view = new CustomerListView({
+				collection : customers,
+				fetch : false
+			});
+
+		}
+	});
+</script>
+
+</body>
+
+
+</html>
